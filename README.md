@@ -1,12 +1,12 @@
 # Spectrum Wrangler Docker
 
-A Dockerized version of Marc DaCosta's awesome Spectrum Wrangler repository, a utility script to import the FCC license database into a PostgreSQL database with GIS and geo indexing support.
+A Dockerized version of Marc DaCosta's awesome [Spectrum Wrangler](https://github.com/marcdacosta/spectrum-wrangler) repository, a utility script to import the FCC license database into a PostgreSQL database with GIS and geo indexing support.
 
 This repo creates docker images, one for the PostgreSQL + PostGIS database and another other for the original python import script for Spectrum Wrangler. This allows for a contained environment, a custom location for the 40GB+ Postgres database, and easy automated install on remote servers.
 
 ## Installing
 
-Before you install this software, first make sure docker and docker-compose are installed on the host machine.
+Before you install this software, first make sure [docker](https://www.docker.com/get-started) and [docker-compose](https://docs.docker.com/compose/install/) are installed on the host machine.
 
 ```bash
 # clone the repo
