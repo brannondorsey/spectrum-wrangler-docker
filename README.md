@@ -10,7 +10,7 @@ Before you install this software, first make sure [docker](https://www.docker.co
 
 ```bash
 # clone the repo
-git clone https://github.com/spectrum-wrangler-docker
+git clone https://github.com/brannondorsey/spectrum-wrangler-docker
 cd spectrum-wrangler-docker
 
 # download the dockerized brannondorsey/spectrum-wrangler fork
