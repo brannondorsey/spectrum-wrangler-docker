@@ -70,7 +70,7 @@ SELECT * FROM fcclicenses WHERE ST_DWithin(
 ) 
 ```
 
-See [`spectrum-wrangler/example-queries.sql` for several additional query examples.
+See `spectrum-wrangler/example-queries.sql` for several additional query examples.
 
 ## Going Further
 
