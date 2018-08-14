@@ -1,3 +1,6 @@
+-- This SQL file is run inside of the postgis container when it is first created.
+-- It sets up the fcc2 database and enables the PostGIS extensions.
+
 CREATE USER fcc2;
 CREATE DATABASE fcc2;
 GRANT ALL PRIVILEGES ON DATABASE fcc2 TO fcc2;

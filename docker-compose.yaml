@@ -19,3 +19,7 @@ services:
       - ./spectrum-wrangler/fcclicense:/tmp/fcclicense/
     depends_on:
       - postgis
+  pgadmin4:
+    image: thajeztah/pgadmin4
+    ports:
+      - 5050:5050

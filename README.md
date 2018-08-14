@@ -18,8 +18,9 @@ git submodule init
 git submodule update
 
 # build and launch the postgis/Dockerfile image. This creates a postgis container
-# with it's database stored in postgis/data_directory
-# and 
+# with it's database stored in postgis/data_directory. Note: you can't be
+# running a PostgreSQL server on the default port of the host machine as ports
+# will conflict.
 docker-compose up postgis
 
 # open a new terminal tab, and manually run the spectrum-wrangler docker service
@@ -27,11 +28,17 @@ docker-compose up postgis
 # which downloads a ~11GB CSV from the FCC's website, dumps it into the postgres
 # database and creates postgis indexes on lat/long for quick spatial queries.
 docker-compose up spectrum-wrangler
+
+# optionally launch pgpadmin4 (PostgreSQL Admin tool) on http://localhost:5050.
+# This can be useful if you want to make queries against the database. Simply
+# create a new database connection to host: "postgis" using user and pass "fcc2"
+docker-compose up pgadmin4
 ```
 
 ## Waiting...
 
 Provided you don't see any errors in your console, the download should be working. This can take ~1-2hrs+ depending on your network connection and your computer's resources. Provided you don't see an error output from the `docker-compose up spectrum-wrangler` process, you should be good to go.
+
 
 ## Querying
 
@@ -54,14 +61,27 @@ Here are some example queries now that you have everything setup:
 -- test that the PostGIS extension has been installed and configured properly
 SELECT round(dms2dd('43° 0''50.60"S'),9) as latitude, round(dms2dd('147°12''18.20"E'),9) as longitude;
 
--- Note: '/tmp/trump-antennas.csv' can then be found in spectrum-wrangler/fcclicense/
-COPY ( 
-    SELECT * FROM fcclicenses WHERE ST_DWithin(
-        geom::geography, 
-        ST_GeogFromText('POINT(-74.0076834 40.7253319)'), 
-        1000, 
-        false) 
-    ) 
-To '/tmp/trump-antennas.csv' With CSV HEADER DELIMITER ',';
+-- select licenses within 1km of Trump Tower, NYC
+SELECT * FROM fcclicenses WHERE ST_DWithin(
+    geom::geography, 
+    ST_GeogFromText('POINT(-74.0076834 40.7253319)'), 
+    1000, 
+    false) 
+) 
 ```
 
+See [`spectrum-wrangler/example-queries.sql` for several additional query examples.
+
+## Going Further
+
+Be default, the `fcclicense` table has a geo index on lat & long. I've found it useful to add a few additional indexes to dramatically speed up query times. You can add several additional indexes to the database like so:
+
+```bash
+# copy additional-indexes.sql to spectrum-wrangler/fcclicense/ so that it will
+# appear in /tmp/fcclicense in the container's filesystem.
+# Note: this may require sudo depending on how docker has created the volume
+cp spectrum-wrangler/additional-indexes.sql spectrum-wrangler/fcclicense/
+
+# add some additional indexes, this may take a while...
+docker-compose exec postgis psql -U fcc2 -f /tmp/fcclicense/additional-indexes.sql fcc2 
+```
