@@ -11,6 +11,7 @@ services:
       - 5432:5432
     expose:
       - 5432
+    restart: unless-stopped
   spectrum-wrangler:
     build: 
       context: spectrum-wrangler
@@ -23,3 +24,6 @@ services:
     image: thajeztah/pgadmin4
     ports:
       - 5050:5050
+    depends_on:
+      - postgis
+    restart: unless-stopped
